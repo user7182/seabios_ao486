@@ -11,12 +11,14 @@
 #include "config.h" // CONFIG_*
 #include "e820map.h" // e820_add
 #include "fw/paravirt.h" // qemu_cfg_preinit
-#include "fw/xen.h" // xen_preinit
+// Unused on MiSTer -- #include "fw/xen.h" // xen_preinit
 #include "hw/pic.h" // pic_setup
 #include "hw/ps2port.h" // ps2port_setup
 #include "hw/rtc.h" // rtc_write
 #include "hw/serialio.h" // serial_debug_preinit
-#include "hw/usb.h" // usb_setup
+// Unused on MiSTer -- #include "hw/usb.h" // usb_setup
+#include "stacks.h" // MiSTer, added header because its needed but no longer 
+                 // pulled in from a sub-include.
 #include "malloc.h" // malloc_init
 #include "memmap.h" // SYMBOL
 #include "output.h" // dprintf
@@ -58,7 +60,7 @@ ivt_init(void)
     SET_IVT(0x17, FUNC16(entry_17));
     SET_IVT(0x18, FUNC16(entry_18));
     SET_IVT(0x19, FUNC16(entry_19_official));
-    SET_IVT(0x1a, FUNC16(entry_1a_official));
+    // Unused on MiSTer -- SET_IVT(0x1a, FUNC16(entry_1a_official));
     SET_IVT(0x40, FUNC16(entry_40));
 
     // INT 60h-66h reserved for user interrupt
@@ -115,7 +117,7 @@ interface_init(void)
 
     // Other interfaces
     boot_init();
-    bios32_init();
+    // Unused on MiSTer -- bios32_init();
     pmm_init();
     pnp_init();
     kbd_init();
@@ -126,7 +128,7 @@ interface_init(void)
 void
 device_hardware_setup(void)
 {
-    usb_setup();
+    // Unused on MiSTer -- usb_setup();
     ps2port_setup();
     block_setup();
     lpt_setup();
@@ -228,7 +230,7 @@ maininit(void)
     prepareboot();
 
     // Write protect bios memory.
-    make_bios_readonly();
+    // Unused on MiSTer -- make_bios_readonly();
 
     // Invoke int 19 to start boot process.
     startBoot();
@@ -314,7 +316,7 @@ dopost(void)
     reloc_preinit(maininit, NULL);
 }
 
-// Entry point for Power On Self Test (POST) - the BIOS initilization
+// Entry point for Power On Self Test (POST) - the BIOS initialization
 // phase.  This function makes the memory at 0xc0000-0xfffff
 // read/writable and then calls dopost().
 void VISIBLE32FLAT
@@ -327,10 +329,13 @@ handle_post(void)
     debug_banner();
 
     // Check if we are running under Xen.
-    xen_preinit();
+    // Unused on MiSTer -- xen_preinit();
 
-    // Allow writes to modify bios area (0xf0000)
-    make_bios_writable();
+    // Allow writes to modify BIOS area (0xf0000)
+    //    On the MiSTer there is no ability to make the BIOS area
+	//    read only or read/write. For SeaBIOS to work the Verilog design needs
+	//    to be updated to allow writes to the BIOS and ROM regions.	
+    // Unused on MiSTer -- make_bios_writable();
 
     // Now that memory is read/writable - start post process.
     dopost();

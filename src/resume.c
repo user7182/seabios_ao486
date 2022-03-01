@@ -7,7 +7,7 @@
 #include "bregs.h" // struct bregs
 #include "config.h" // CONFIG_*
 #include "farptr.h" // FLATPTR_TO_SEGOFF
-#include "hw/pci.h" // pci_reboot
+// Unused on MiSTer -- #include "hw/pci.h" // pci_reboot
 #include "hw/pic.h" // pic_eoi2
 #include "hw/ps2port.h" // i8042_reboot
 #include "hw/rtc.h" // rtc_read
@@ -97,10 +97,10 @@ s3_resume(void)
     }
 
     pic_setup();
-    smm_setup();
-    smp_resume();
+    // Unused on MiSTer -- smm_setup();
+    // Unused on MiSTer -- smp_resume();
 
-    pci_resume();
+    // Unused on MiSTer -- pci_resume();
 
     /* resume TPM before we may measure option roms */
     tpm_s3_resume();
@@ -109,7 +109,7 @@ s3_resume(void)
     /* Replay any fw_cfg entries that go back to the host */
     romfile_fw_cfg_resume();
 
-    make_bios_readonly();
+    // Unused on MiSTer -- make_bios_readonly();
 
     // Invoke the resume vector.
     struct bregs br;
@@ -126,16 +126,16 @@ tryReboot(void)
     dprintf(1, "Attempting a hard reboot\n");
 
     // Use a QEMU specific reboot on QEMU
-    qemu_reboot();
+    // Unused on MiSTer -- qemu_reboot();
 
     // Reboot using ACPI RESET_REG
-    acpi_reboot();
+    // Unused on MiSTer -- acpi_reboot();
 
     // Try keyboard controller reboot.
     i8042_reboot();
 
     // Try PCI 0xcf9 reboot
-    pci_reboot();
+    // Unused on MiSTer -- pci_reboot();
 
     // Try triple fault
     asm volatile("int3");
