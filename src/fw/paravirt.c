@@ -49,6 +49,7 @@ inline int qemu_cfg_dma_enabled(void)
     return cfg_dma_enabled;
 }
 
+#if defined(UNUSED_ON_MISTER)
 /* This CPUID returns the signature 'KVMKVMKVM' in ebx, ecx, and edx.  It
  * should be used to determine that a VM is running under KVM.
  */
@@ -76,7 +77,6 @@ static void kvm_detect(void)
     }
 }
 
-#if defined(UNUSED_ON_MISTER)
 #define KVM_FEATURE_CLOCKSOURCE           0
 #define KVM_FEATURE_CLOCKSOURCE2          3
 
@@ -118,14 +118,12 @@ static void kvmclock_init(void)
     dprintf(1, "kvmclock: stable tsc, %d MHz\n", MHz);
     tsctimer_setfreq(MHz * 1000, "kvmclock");
 }
-#endif // defined(UNUSED_ON_MISTER)
 
 static void qemu_detect(void)
 {
     if (!CONFIG_QEMU_HARDWARE)
         return;
 
-#if defined(UNUSED_ON_MISTER)
     // Setup QEMU debug output port
     qemu_debug_preinit();
 
@@ -153,16 +151,18 @@ static void qemu_detect(void)
         dprintf(1, "Running on QEMU (unknown nb: %04x:%04x)\n", v, d);
         break;
     }
-#endif // defined(UNUSED_ON_MISTER)
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 // Unused on MiSTer -- static int qemu_early_e820(void);
 
 void
 qemu_preinit(void)
 {
+#if defined(UNUSED_ON_MISTER)
     qemu_detect();
     kvm_detect();
+#endif // defined(UNUSED_ON_MISTER)
 
     if (!CONFIG_QEMU)
         return;
@@ -222,11 +222,9 @@ qemu_platform_setup(void)
     kvmclock_init();
 
     // Initialize pci
-#if defined(UNUSED_ON_MISTER)
     pci_setup();
     smm_device_setup();
     smm_setup();
-#endif // defined(UNUSED_ON_MISTER)
 
     // Initialize mtrr, msr_feature_control and smp
     mtrr_setup();

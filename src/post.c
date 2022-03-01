@@ -24,7 +24,7 @@
 #include "output.h" // dprintf
 #include "string.h" // memset
 #include "util.h" // kbd_init
-#include "tcgbios.h" // tpm_*
+// Unused on MiSTer -- #include "tcgbios.h" // tpm_*
 
 
 /****************************************************************
@@ -158,18 +158,18 @@ platform_hardware_setup(void)
     // Unused on MiSTer -- coreboot_platform_setup();
 
     // Setup timers and periodic clock interrupt
-    timer_setup();
+    // Unused on MiSTer (function could have been named tsc_timer_setup) -- timer_setup();
     clock_setup();
 
     // Initialize TPM
-    tpm_setup();
+    // Unused on MiSTer -- tpm_setup();
 }
 
 void
 prepareboot(void)
 {
     // Change TPM phys. presence state befor leaving BIOS
-    tpm_prepboot();
+    // Unused on MiSTer -- tpm_prepboot();
 
     // Run BCVs
     bcv_prepboot();

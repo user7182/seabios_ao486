@@ -15,7 +15,7 @@
 #include "std/disk.h" // DISK_RET_SUCCESS
 #include "string.h" // memset
 #include "util.h" // cdrom_prepboot
-#include "tcgbios.h" // tpm_*
+// Unused on MiSTer -- #include "tcgbios.h" // tpm_*
 
 
 /****************************************************************
@@ -185,7 +185,7 @@ cdrom_boot(struct drive_s *drive)
         return 11; // Bootable
 
     /* measure 2048 bytes (one sector) */
-    tpm_add_cdrom_catalog(MAKE_FLATPTR(GET_SEG(SS), buffer), sizeof(buffer));
+    // Unused on MiSTer -- tpm_add_cdrom_catalog(MAKE_FLATPTR(GET_SEG(SS), buffer), sizeof(buffer));
 
     // Fill in el-torito cdrom emulation fields.
     emulated_drive_gf = drive;

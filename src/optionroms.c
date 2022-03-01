@@ -21,7 +21,7 @@
 #include "std/pnpbios.h" // PNP_SIGNATURE
 #include "string.h" // memset
 #include "util.h" // get_pnp_offset
-#include "tcgbios.h" // tpm_*
+// Unused on MiSTer -- #include "tcgbios.h" // tpm_*
 
 static int EnforceChecksum, S3ResumeVga, RunPCIroms;
 
@@ -137,7 +137,7 @@ init_optionrom(struct rom_header *rom, u16 bdf, int isvga)
     if (newrom != rom)
         memmove(newrom, rom, rom->size * 512);
 
-    tpm_option_rom(newrom, rom->size * 512);
+    // Unused on MiSTer -- tpm_option_rom(newrom, rom->size * 512);
 
     if (isvga || get_pnp_rom(newrom))
         // Only init vga and PnP roms here.

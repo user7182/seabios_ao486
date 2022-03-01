@@ -32,16 +32,19 @@ extern u32 RamSize;
 extern u64 RamSizeOver4G;
 extern int PlatformRunningOn;
 
+#if defined(UNUSED_ON_MISTER)
 static inline int runningOnQEMU(void) {
     return CONFIG_QEMU || (
         CONFIG_QEMU_HARDWARE && GET_GLOBAL(PlatformRunningOn) & PF_QEMU);
 }
+
 static inline int runningOnXen(void) {
     return CONFIG_XEN && GET_GLOBAL(PlatformRunningOn) & PF_XEN;
 }
 static inline int runningOnKVM(void) {
     return CONFIG_QEMU && GET_GLOBAL(PlatformRunningOn) & PF_KVM;
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 // Common paravirt ports.
 #define PORT_SMI_CMD                0x00b2

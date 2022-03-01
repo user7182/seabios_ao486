@@ -30,20 +30,20 @@ LD32BIT_FLAG:=-melf_i386
 # Source files
 SRCBOTH=misc.c stacks.c output.c string.c block.c cdrom.c disk.c	\
     mouse.c kbd.c system.c serial.c sercon.c clock.c resume.c		\
-    pnpbios.c vgahooks.c apm.c cp437.c hw/timer.c	\
+    pnpbios.c vgahooks.c cp437.c hw/timer.c	\
     hw/rtc.c hw/dma.c hw/pic.c hw/ps2port.c hw/serialio.c	\
     hw/blockcmd.c hw/floppy.c hw/ata.c	\
     hw/ramdisk.c
 SRC16=$(SRCBOTH)
 SRC32FLAT=$(SRCBOTH) post.c e820map.c malloc.c romfile.c x86.c		\
     optionroms.c pmm.c font.c boot.c bootsplash.c jpeg.c bmp.c		\
-    tcgbios.c sha1.c 	\
+    sha1.c 	\
     fw/lzmadecode.c fw/csm.c fw/biostables.c		\
     fw/paravirt.c fw/smp.c		\
     fw/mtrr.c fw/acpi.c fw/mptable.c fw/pirtable.c		\
     fw/smbios.c fw/romfile_loader.c fw/dsdt_parser.c 	\
     hw/tpm_drivers.c sha256.c sha512.c
-SRC32SEG=string.c output.c apm.c stacks.c hw/serialio.c
+SRC32SEG=string.c output.c stacks.c hw/serialio.c
 DIRS=src src/hw src/fw vgasrc
 
 # Default compiler flags

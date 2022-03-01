@@ -22,7 +22,7 @@
 #include "std/disk.h" // struct mbr_s
 #include "string.h" // memset
 #include "util.h" // irqtimer_calc
-#include "tcgbios.h" // tpm_*
+// Unused on MiSTer -- #include "tcgbios.h" // tpm_*
 
 /****************************************************************
  * Helper search functions
@@ -706,7 +706,7 @@ interactive_bootmenu(void)
         return;
 
     // skip menu if only one boot device and no TPM
-    if (show_boot_menu == 2 && !tpm_can_show_menu()
+    if (show_boot_menu == 2 /* Unused on MiSTer -- && !tpm_can_show_menu() */
         && !hlist_empty(&BootList) && !BootList.first->next) {
         dprintf(1, "Only one boot device present. Skip boot menu.\n");
         printf("\n");
@@ -746,9 +746,11 @@ interactive_bootmenu(void)
                , strtcpy(desc, pos->description, ARRAY_SIZE(desc)));
         maxmenu++;
     }
+#if defined(UNUSED_ON_MISTER)
     if (tpm_can_show_menu()) {
         printf("\nt. TPM Configuration\n");
     }
+#endif // defined(UNUSED_ON_MISTER)
 
     // Get key press.  If the menu key is ESC, do not restart boot unless
     // 1.5 seconds have passed.  Otherwise users (trained by years of
@@ -764,10 +766,12 @@ interactive_bootmenu(void)
 
         scan_code = keystroke >> 8;
         int key_ascii = keystroke & 0xff;
+#if defined(UNUSED_ON_MISTER)
         if (tpm_can_show_menu() && key_ascii == 't') {
             printf("\n");
             tpm_menu();
         }
+#endif // defined(UNUSED_ON_MISTER)
         if (scan_code == 1) {
             // ESC
             printf("\n");
@@ -911,7 +915,7 @@ boot_disk(u8 bootdrv, int checksig)
         }
     }
 
-    tpm_add_bcv(bootdrv, MAKE_FLATPTR(bootseg, 0), 512);
+    // Unused on MiSTer -- tpm_add_bcv(bootdrv, MAKE_FLATPTR(bootseg, 0), 512);
 
     /* Canonicalize bootseg:bootip */
     u16 bootip = (bootseg & 0x0fff) << 4;
@@ -937,7 +941,7 @@ boot_cdrom(struct drive_s *drive)
     u8 bootdrv = CDEmu.emulated_drive;
     u16 bootseg = CDEmu.load_segment;
 
-    tpm_add_cdrom(bootdrv, MAKE_FLATPTR(bootseg, 0), 512);
+    // Unused on MiSTer -- tpm_add_cdrom(bootdrv, MAKE_FLATPTR(bootseg, 0), 512);
 
     /* Canonicalize bootseg:bootip */
     u16 bootip = (bootseg & 0x0fff) << 4;

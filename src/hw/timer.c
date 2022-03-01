@@ -53,7 +53,7 @@ u32 TimerKHz VARFSEG = DIV_ROUND_UP(PMTIMER_HZ, 1000 * PMTIMER_TO_PIT);
 u16 TimerPort VARFSEG = PORT_PIT_COUNTER0;
 u8 ShiftTSC VARFSEG;
 
-
+#if defined(UNUSED_ON_MISTER)
 /****************************************************************
  * Internal timer setup
  ****************************************************************/
@@ -146,7 +146,7 @@ pmtimer_setup(u16 ioport)
     TimerPort = ioport;
     TimerKHz = DIV_ROUND_UP(PMTIMER_HZ, 1000);
 }
-
+#endif // defined(UNUSED_ON_MISTER)
 
 /****************************************************************
  * Internal timer reading

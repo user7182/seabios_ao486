@@ -12,7 +12,7 @@
 #include "malloc.h" // LegacyRamSize
 #include "output.h" // debug_enter
 #include "string.h" // memcpy_far
-#include "util.h" // handle_1553
+#include "util.h" // handle_15xx
 #include "x86.h" // set_a20
 
 static void
@@ -339,7 +339,7 @@ handle_15(struct bregs *regs)
     case 0x24: handle_1524(regs); break;
     case 0x4f: handle_154f(regs); break;
     case 0x52: handle_1552(regs); break;
-    case 0x53: handle_1553(regs); break;
+    // Unused on MiSTer -- case 0x53: handle_1553(regs); break;
     case 0x5f: handle_155f(regs); break;
     case 0x7f: handle_157f(regs); break;
     case 0x83: handle_1583(regs); break;
