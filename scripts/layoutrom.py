@@ -200,18 +200,25 @@ def doLayout(sections, config, genreloc):
     datasections = getSectionsPrefix(sections32seg, '.data32seg.')
 
     sec32seg_start, sec32seg_align = setSectionsStart(
-        textsections + rodatasections + datasections, sec16_start
-        , segoffset=BUILD_BIOS_ADDR)
+        sections=textsections + rodatasections + datasections,
+        endaddr=sec16_start,
+        segoffset=BUILD_BIOS_ADDR)
 
     # Determine 32bit "fseg memory" data positions
     sections32textfseg = getSectionsCategory(sections, '32textfseg')
     sec32textfseg_start, sec32textfseg_align = setSectionsStart(
-        sections32textfseg, sec32seg_start, 16)
+        sections=sections32textfseg,
+        endaddr=sec32seg_start,
+        minalign=16
+    )
 
     sections32fseg = getSectionsCategory(sections, '32fseg')
     sec32fseg_start, sec32fseg_align = setSectionsStart(
-        sections32fseg, sec32textfseg_start, 16
-        , segoffset=BUILD_BIOS_ADDR)
+        sections=sections32fseg,
+        endaddr=sec32textfseg_start,
+        minalign=16,
+        segoffset=BUILD_BIOS_ADDR
+    )
 
     # Determine 32flat runtime positions
     sections32flat = getSectionsCategory(sections, '32flat')
@@ -221,8 +228,10 @@ def doLayout(sections, config, genreloc):
     bsssections = getSectionsPrefix(sections32flat, '.bss.')
 
     sec32flat_start, sec32flat_align = setSectionsStart(
-        textsections + rodatasections + datasections + bsssections
-        , sec32fseg_start, 16)
+        sections=textsections + rodatasections + datasections + bsssections,
+        endaddr=sec32fseg_start,
+        minalign=16
+    )
 
     # Determine 32flat init positions
     sections32init = getSectionsCategory(sections, '32init')
@@ -274,8 +283,11 @@ def doLayout(sections, config, genreloc):
         zonelow_base = final_sec32low_end - 64*1024
     relocdelta = final_sec32low_end - sec32low_end
     li.sec32low_start, sec32low_align = setSectionsStart(
-        sections32low, sec32low_end, 16
-        , segoffset=zonelow_base - relocdelta)
+        sections=sections32low, 
+        endaddr=sec32low_end,
+        minalign=16,
+        segoffset=zonelow_base - relocdelta
+    )
     li.sec32low_end = sec32low_end
     li.zonelow_base = zonelow_base
     li.final_sec32low_start = li.sec32low_start + relocdelta
