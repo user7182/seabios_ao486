@@ -663,14 +663,15 @@ entry_15_official:
         IRQ_ENTRY_ARG 15
 
         // 0xfa6e - vgafont8 in font.c
-#if defined(UNUSED_ON_MISTER)
         ORG 0xfe6e
         .global entry_1a_official
 entry_1a_official:
+#if defined(UNUSED_ON_MISTER)
+        // int 1a/b1 PCIBIOS calls are not supported on MiSTer.
         cmpb $0xb1, %ah
         je entry_pcibios16      // PCIBIOS calls can be in protected mode
-        IRQ_ENTRY_ARG 1a
 #endif // defined(UNUSED_ON_MISTER)
+        IRQ_ENTRY_ARG 1a
         ORG 0xfea5
         IRQ_ENTRY 08
 
