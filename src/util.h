@@ -234,8 +234,8 @@ void s3_resume_vga(void);
 extern int ScreenAndDebug;
 
 // pcibios.c
-void handle_1ab1(struct bregs *regs);
-void bios32_init(void);
+// Unused on MiSTer -- void handle_1ab1(struct bregs *regs);
+// Unused on MiSTer -- void bios32_init(void);
 
 // pmm.c
 void pmm_init(void);

@@ -10,7 +10,7 @@
 #include "hw/pic.h" // pic_eoi1
 #include "hw/ps2port.h" // ps2_check_event
 #include "hw/rtc.h" // rtc_read
-#include "hw/usb-hid.h" // usb_check_event
+// Unused on MiSTer -- #include "hw/usb-hid.h" // usb_check_event
 #include "output.h" // debug_enter
 #include "stacks.h" // yield
 #include "string.h" // memset
@@ -293,7 +293,7 @@ clock_update(void)
 
     // Check for internal events.
     floppy_tick();
-    usb_check_event();
+    // Unused on MiSTer -- usb_check_event();
     ps2_check_event();
     sercon_check_event();
 }

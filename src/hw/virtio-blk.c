@@ -19,10 +19,10 @@
 #include "std/disk.h" // DISK_RET_SUCCESS
 #include "string.h" // memset
 #include "util.h" // usleep, bootprio_find_pci_device, is_bootprio_strict
-#include "virtio-pci.h"
-#include "virtio-mmio.h"
-#include "virtio-ring.h"
-#include "virtio-blk.h"
+// Unused on MiSTer -- #include "virtio-pci.h"
+// Unused on MiSTer -- #include "virtio-mmio.h"
+// Unused on MiSTer -- #include "virtio-ring.h"
+// Unused on MiSTer -- #include "virtio-blk.h"
 
 #define min(a, b) ({\
 		typeof(a) _a = a;\

@@ -12,10 +12,10 @@
 #include "byteorder.h" // be16_to_cpu
 #include "malloc.h" // malloc_fseg
 #include "output.h" // dprintf
-#include "pci.h" // pci_config_readb
-#include "pcidevice.h" // foreachpci
-#include "pci_ids.h" // PCI_CLASS_STORAGE_OTHER
-#include "pci_regs.h" // PCI_INTERRUPT_LINE
+// Unused on MiSTer -- #include "pci.h" // pci_config_readb
+// Unused on MiSTer -- #include "pcidevice.h" // foreachpci
+// Unused on MiSTer -- #include "pci_ids.h" // PCI_CLASS_STORAGE_OTHER
+// Unused on MiSTer -- #include "pci_regs.h" // PCI_INTERRUPT_LINE
 #include "pic.h" // enable_hwirq
 #include "stacks.h" // yield
 #include "std/disk.h" // DISK_RET_SUCCESS
@@ -937,7 +937,7 @@ init_controller(struct pci_device *pci, int chanid, int irq
     chan_gf->ataid = ataid++;
     chan_gf->chanid = chanid;
     chan_gf->irq = irq;
-    chan_gf->pci_bdf = pci ? pci->bdf : -1;
+    chan_gf->pci_bdf = -1;  // Unused on MiSTer -- pci ? pci->bdf : -1;
     chan_gf->pci_tmp = pci;
     chan_gf->iobase1 = port1;
     chan_gf->iobase2 = port2;
@@ -949,7 +949,7 @@ init_controller(struct pci_device *pci, int chanid, int irq
 
 #define IRQ_ATA1 14
 #define IRQ_ATA2 15
-
+#if defined(UNUSED_ON_MISTER)
 // Handle controllers on an ATA PCI device.
 static void
 init_pciata(struct pci_device *pci, u8 prog_if)
@@ -1014,12 +1014,13 @@ static const struct pci_device_id pci_ata_tbl[] = {
     PCI_DEVICE(PCI_VENDOR_ID_ATI, 0x4391, found_compatibleahci),
     PCI_DEVICE_END,
 };
+#endif // defined(UNUSED_ON_MISTER)
 
 // Locate and init ata controllers.
 static void
 ata_scan(void)
 {
-    if (CONFIG_QEMU && hlist_empty(&PCIDevices)) {
+    if (CONFIG_QEMU /* Unused on MiSTer -- && hlist_empty(&PCIDevices)*/) {
         // No PCI devices found - probably a QEMU "-M isapc" machine.
         // Try using ISA ports for ATA controllers.
         init_controller(NULL, 0, IRQ_ATA1
@@ -1030,10 +1031,12 @@ ata_scan(void)
     }
 
     // Scan PCI bus for ATA adapters
+#if defined(UNUSED_ON_MISTER)
     struct pci_device *pci;
     foreachpci(pci) {
         pci_init_device(pci_ata_tbl, pci, NULL);
     }
+#endif // defined(UNUSED_ON_MISTER)	
 }
 
 void

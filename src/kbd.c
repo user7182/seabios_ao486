@@ -9,7 +9,7 @@
 #include "bregs.h" // struct bregs
 #include "config.h" // CONFIG_*
 #include "hw/ps2port.h" // ps2_kbd_command
-#include "hw/usb-hid.h" // usb_kbd_command
+// Unused on MiSTer -- #include "hw/usb-hid.h" // usb_kbd_command
 #include "output.h" // debug_enter
 #include "stacks.h" // yield
 #include "string.h" // memset
@@ -107,8 +107,10 @@ dequeue_key(struct bregs *regs, int incr, int extended)
 static int
 kbd_command(int command, u8 *param)
 {
+#if defined(UNUSED_ON_MISTER)
     if (usb_kbd_active())
         return usb_kbd_command(command, param);
+#endif // defined(UNUSED_ON_MISTER)
     return ps2_kbd_command(command, param);
 }
 

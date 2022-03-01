@@ -8,7 +8,7 @@
 #include "biosvar.h" // GET_EBDA
 #include "bregs.h" // struct bregs
 #include "hw/ps2port.h" // ps2_mouse_command
-#include "hw/usb-hid.h" // usb_mouse_command
+// Unused on MiSTer -- #include "hw/usb-hid.h" // usb_mouse_command
 #include "output.h" // dprintf
 #include "stacks.h" // stack_hop_back
 #include "util.h" // mouse_init
@@ -26,8 +26,10 @@ mouse_init(void)
 static int
 mouse_command(int command, u8 *param)
 {
+#if defined(UNUSED_ON_MISTER)
     if (usb_mouse_active())
         return usb_mouse_command(command, param);
+#endif // defined(UNUSED_ON_MISTER)
     return ps2_mouse_command(command, param);
 }
 

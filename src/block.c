@@ -8,19 +8,19 @@
 #include "biosvar.h" // GET_GLOBAL
 #include "block.h" // process_op
 #include "hw/ata.h" // process_ata_op
-#include "hw/ahci.h" // process_ahci_op
-#include "hw/esp-scsi.h" // esp_scsi_process_op
-#include "hw/lsi-scsi.h" // lsi_scsi_process_op
-#include "hw/megasas.h" // megasas_process_op
-#include "hw/mpt-scsi.h" // mpt_scsi_process_op
+// Unused on MiSTer -- #include "hw/ahci.h" // process_ahci_op
+// Unused on MiSTer -- #include "hw/esp-scsi.h" // esp_scsi_process_op
+// Unused on MiSTer -- #include "hw/lsi-scsi.h" // lsi_scsi_process_op
+// Unused on MiSTer -- #include "hw/megasas.h" // megasas_process_op
+// Unused on MiSTer -- #include "hw/mpt-scsi.h" // mpt_scsi_process_op
 #include "hw/pci.h" // pci_bdf_to_bus
-#include "hw/pvscsi.h" // pvscsi_process_op
+// Unused on MiSTer -- #include "hw/pvscsi.h" // pvscsi_process_op
 #include "hw/rtc.h" // rtc_read
-#include "hw/usb-msc.h" // usb_process_op
-#include "hw/usb-uas.h" // uas_process_op
-#include "hw/virtio-blk.h" // process_virtio_blk_op
-#include "hw/virtio-scsi.h" // virtio_scsi_process_op
-#include "hw/nvme.h" // nvme_process_op
+// Unused on MiSTer -- #include "hw/usb-msc.h" // usb_process_op
+// Unused on MiSTer -- #include "hw/usb-uas.h" // uas_process_op
+// Unused on MiSTer -- #include "hw/virtio-blk.h" // process_virtio_blk_op
+// Unused on MiSTer -- #include "hw/virtio-scsi.h" // virtio_scsi_process_op
+// Unused on MiSTer -- #include "hw/nvme.h" // nvme_process_op
 #include "malloc.h" // malloc_low
 #include "output.h" // dprintf
 #include "stacks.h" // call32
@@ -509,17 +509,17 @@ block_setup(void)
 {
     floppy_setup();
     ata_setup();
-    ahci_setup();
-    sdcard_setup();
+    // Unused on MiSTer -- ahci_setup();
+    // Unused on MiSTer -- sdcard_setup();
     ramdisk_setup();
-    virtio_blk_setup();
-    virtio_scsi_setup();
-    lsi_scsi_setup();
-    esp_scsi_setup();
-    megasas_setup();
-    pvscsi_setup();
-    mpt_scsi_setup();
-    nvme_setup();
+    // Unused on MiSTer -- virtio_blk_setup();
+    // Unused on MiSTer -- virtio_scsi_setup();
+    // Unused on MiSTer -- lsi_scsi_setup();
+    // Unused on MiSTer -- esp_scsi_setup();
+    // Unused on MiSTer -- megasas_setup();
+    // Unused on MiSTer -- pvscsi_setup();
+    // Unused on MiSTer -- mpt_scsi_setup();
+    // Unused on MiSTer -- nvme_setup();
 }
 
 // Fallback handler for command requests not implemented by drivers
@@ -546,6 +546,7 @@ process_op_both(struct disk_op_s *op)
     switch (GET_FLATPTR(op->drive_fl->type)) {
     case DTYPE_ATA_ATAPI:
         return ata_atapi_process_op(op);
+#if defined(UNUSED_ON_MISTER)
     case DTYPE_USB:
         return usb_process_op(op);
     case DTYPE_UAS:
@@ -558,6 +559,7 @@ process_op_both(struct disk_op_s *op)
         return megasas_process_op(op);
     case DTYPE_MPT_SCSI:
         return mpt_scsi_process_op(op);
+#endif // defined(UNUSED_ON_MISTER)		
     default:
         if (!MODESEGMENT)
             return DISK_RET_EPARAM;
@@ -573,6 +575,7 @@ process_op_32(struct disk_op_s *op)
 {
     ASSERT32FLAT();
     switch (op->drive_fl->type) {
+#if defined(UNUSED_ON_MISTER)
     case DTYPE_VIRTIO_BLK:
         return virtio_blk_process_op(op);
     case DTYPE_AHCI:
@@ -591,6 +594,7 @@ process_op_32(struct disk_op_s *op)
         return pvscsi_process_op(op);
     case DTYPE_NVME:
         return nvme_process_op(op);
+#endif // defined(UNUSED_ON_MISTER)
     default:
         return process_op_both(op);
     }
