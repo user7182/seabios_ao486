@@ -47,6 +47,14 @@ serial_debug_preinit(void)
 {
     if (!CONFIG_DEBUG_SERIAL && (!CONFIG_DEBUG_SERIAL_MMIO || MODESEGMENT))
         return;
+
+// MiSTER: For some reason we need to configure a baud rate or we get no output.
+// This doesn't appear to fit how other systems work, they just set 8N1 and go.
+   outb(0x80, CONFIG_DEBUG_SERIAL_PORT + 3);    // Enable DLAB (set baud rate divisor)
+   outb(0x03, CONFIG_DEBUG_SERIAL_PORT + 0);    // Set divisor to 3 (lo byte) 38400 baud
+   outb(0x00, CONFIG_DEBUG_SERIAL_PORT + 1);    //                  (hi byte)  
+//
+
     // setup for serial logging: 8N1
     u8 oldparam, newparam = 0x03;
     oldparam = serial_debug_read(SEROFF_LCR);
