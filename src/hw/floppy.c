@@ -11,8 +11,8 @@
 #include "config.h" // CONFIG_FLOPPY
 #include "malloc.h" // malloc_fseg
 #include "output.h" // dprintf
-#include "pcidevice.h" // pci_find_class
-#include "pci_ids.h" // PCI_CLASS_BRIDGE_ISA
+// Unused on MiSTer -- #include "pcidevice.h" // pci_find_class
+// Unused on MiSTer -- #include "pci_ids.h" // PCI_CLASS_BRIDGE_ISA
 #include "pic.h" // pic_eoi1
 #include "romfile.h" // romfile_loadint
 #include "rtc.h" // rtc_read
@@ -137,9 +137,15 @@ addFloppy(int floppyid, int ftype)
     struct drive_s *drive = init_floppy(floppyid, ftype);
     if (!drive)
         return;
+#if defined(UNUSED_ON_MISTER)
     char *desc = znprintf(MAXDESCSIZE, "Floppy [drive %c]", 'A' + floppyid);
     struct pci_device *pci = pci_find_class(PCI_CLASS_BRIDGE_ISA); /* isa-to-pci bridge */
     int prio = bootprio_find_fdc_device(pci, PORT_FD_BASE, floppyid);
+#else
+    // MiSTer
+    char *desc = znprintf(MAXDESCSIZE, "Floppy [drive %c]", 'A' + floppyid);
+    int prio = 1;   // Unsure what priority does in this context, value set arbitrarily.
+#endif // defined(UNUSED_ON_MISTER)
     boot_add_floppy(drive, desc, prio);
 }
 
