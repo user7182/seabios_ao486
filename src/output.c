@@ -503,6 +503,14 @@ __debug_enter(struct bregs *regs, const char *fname)
     dump_regs(regs);
 }
 
+// MiSTer: Function called on handler exit.
+void
+__debug_exit(struct bregs *regs, const char *fname)
+{
+    dprintf(1, "exit %s:\n", fname);
+    dump_regs(regs);
+}
+
 // Send debugging output info.
 void
 __debug_stub(struct bregs *regs, int lineno, const char *fname)

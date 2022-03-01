@@ -272,6 +272,7 @@ handle_1a(struct bregs *regs)
     case 0x05: handle_1a05(regs); break;
     case 0x06: handle_1a06(regs); break;
     case 0x07: handle_1a07(regs); break;
+    case 0xb1: break;   // MiSTer -- Supressed debug output for unsupported PCI BIOS.
     case 0xbb: handle_1abb(regs); break;
     default:   handle_1aXX(regs); break;
     }

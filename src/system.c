@@ -354,4 +354,5 @@ handle_15(struct bregs *regs)
     case 0xe8: handle_15e8(regs); break;
     default:   handle_15XX(regs); break;
     }
+    debug_exit(regs, DEBUG_HDL_15);  // MiSTer
 }

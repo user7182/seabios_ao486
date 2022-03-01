@@ -168,7 +168,7 @@ handle_14(struct bregs *regs)
 {
     debug_enter(regs, DEBUG_HDL_14);
     if (! CONFIG_SERIAL) {
-        handle_14XX(regs);
+        // MiSTer -- Suppress debug output for a feature intentionally disabled. handle_14XX(regs);
         return;
     }
 
@@ -304,7 +304,7 @@ handle_17(struct bregs *regs)
 {
     debug_enter(regs, DEBUG_HDL_17);
     if (! CONFIG_LPT) {
-        handle_17XX(regs);
+        // MiSTer -- Suppress debug output for a feature intentionally disabled. handle_17XX(regs);
         return;
     }
 
