@@ -115,6 +115,12 @@ interface_init(void)
     ivt_init();
     bda_init();
 
+    // MiSTer -- Protect the MiSTer shared FS region
+    //  values based on x86_share.cpp in the Main_MiSTer repository.
+    //      SHMEM_ADDR      0xCE000
+    //      SHMEM_SIZE      0x2000
+    e820_add(0xCE000, 0x2000, E820_RESERVED);
+
     // Other interfaces
     boot_init();
     // Unused on MiSTer -- bios32_init();
