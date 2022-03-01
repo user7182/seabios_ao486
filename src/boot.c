@@ -12,7 +12,7 @@
 #include "hw/pci.h" // pci_bdf_to_*
 #include "hw/pcidevice.h" // struct pci_device
 #include "hw/rtc.h" // rtc_read
-#include "hw/usb.h" // struct usbdevice_s
+// Unused on MiSTer -- #include "hw/usb.h" // struct usbdevice_s
 #include "list.h" // hlist_node
 #include "malloc.h" // free
 #include "output.h" // dprintf
@@ -303,7 +303,7 @@ u8 is_bootprio_strict(void)
         prio_halt = find_prio("HALT");
     return prio_halt >= 0;
 }
-
+#if defined(UNUSED_ON_MISTER)
 int bootprio_find_pci_device(struct pci_device *pci)
 {
     if (CONFIG_CSM)
@@ -346,7 +346,7 @@ int bootprio_find_scsi_mmio_device(void *mmio, int target, int lun)
              (u32)mmio, target, lun);
     return find_prio(desc);
 }
-
+#endif // defined(UNUSED_ON_MISTER)
 int bootprio_find_ata_device(struct pci_device *pci, int chanid, int slave)
 {
     if (CONFIG_CSM)
@@ -377,6 +377,7 @@ int bootprio_find_fdc_device(struct pci_device *pci, int port, int fdid)
     return find_prio(desc);
 }
 
+#if defined(UNUSED_ON_MISTER)
 int bootprio_find_pci_rom(struct pci_device *pci, int instance)
 {
     if (!CONFIG_BOOTORDER)
@@ -388,6 +389,7 @@ int bootprio_find_pci_rom(struct pci_device *pci, int instance)
         snprintf(p, desc+sizeof(desc)-p, ":rom%x", instance);
     return find_prio(desc);
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 int bootprio_find_named_rom(const char *name, int instance)
 {
@@ -401,6 +403,7 @@ int bootprio_find_named_rom(const char *name, int instance)
     return find_prio(desc);
 }
 
+#if defined(UNUSED_ON_MISTER)
 static int usb_portmap(struct usbdevice_s *usbdev)
 {
     if (usbdev->hub->op->portmap)
@@ -446,7 +449,7 @@ int bootprio_find_usb(struct usbdevice_s *usbdev, int lun)
     snprintf(p, desc+sizeof(desc)-p, "/usb-*@%x", usb_portmap(usbdev));
     return find_prio(desc);
 }
-
+#endif // defined(UNUSED_ON_MISTER)
 
 /****************************************************************
  * Boot setup
@@ -878,17 +881,19 @@ call_boot_entry(struct segoff_s bootsegip, u8 bootdrv)
 static void
 boot_disk(u8 bootdrv, int checksig)
 {
-    u16 bootseg = 0x07c0;
+    u16 bootseg = 0x07c0;   // Copy data into 07c0:0000
 
     // Read sector
     struct bregs br;
     memset(&br, 0, sizeof(br));
     br.flags = F_IF;
-    br.dl = bootdrv;
-    br.es = bootseg;
-    br.ah = 2;
-    br.al = 1;
-    br.cl = 1;
+    br.dl = bootdrv;    // drive #
+    br.es = bootseg;    // callers buffer address
+    br.bx = 0;          //   ^
+    br.ah = 2;  // command (Read Sectors)
+    br.al = 1;  // sector count
+    br.cl = 1;  // sector number
+   
     call16_int(0x13, &br);
 
     if (br.flags & F_CF) {
