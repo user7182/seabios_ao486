@@ -144,7 +144,7 @@ addFloppy(int floppyid, int ftype)
 #else
     // MiSTer
     char *desc = znprintf(MAXDESCSIZE, "Floppy [drive %c]", 'A' + floppyid);
-    int prio = 1;   // Unsure what priority does in this context, value set arbitrarily.
+    int prio = 9999; // Set floppy boot order to be last.
 #endif // defined(UNUSED_ON_MISTER)
     boot_add_floppy(drive, desc, prio);
 }
