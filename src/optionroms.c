@@ -9,10 +9,10 @@
 #include "config.h" // CONFIG_*
 #include "farptr.h" // FLATPTR_TO_SEG
 #include "biosvar.h" // GET_IVT
-#include "hw/pci.h" // pci_config_readl
-#include "hw/pcidevice.h" // foreachpci
-#include "hw/pci_ids.h" // PCI_CLASS_DISPLAY_VGA
-#include "hw/pci_regs.h" // PCI_ROM_ADDRESS
+// Unused on MiSTer -- #include "hw/pci.h" // pci_config_readl
+// Unused on MiSTer -- #include "hw/pcidevice.h" // foreachpci
+// Unused on MiSTer -- #include "hw/pci_ids.h" // PCI_CLASS_DISPLAY_VGA
+// Unused on MiSTer -- #include "hw/pci_regs.h" // PCI_ROM_ADDRESS
 #include "malloc.h" // rom_confirm
 #include "output.h" // dprintf
 #include "romfile.h" // romfile_loadint
@@ -109,6 +109,7 @@ get_pnp_next(struct rom_header *rom, struct pnp_data *pnp)
 }
 
 // Check if a valid option rom has a pci struct; return it if so.
+#if defined(UNUSED_ON_MISTER)
 static struct pci_data *
 get_pci_rom(struct rom_header *rom)
 {
@@ -120,6 +121,7 @@ get_pci_rom(struct rom_header *rom)
                 , pd->vendor, pd->device);
     return pd;
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 // Run rom init code and note rom size.
 static int
@@ -159,8 +161,10 @@ getRomPriority(u64 *sources, struct rom_header *rom, int instance)
     u64 source = sources[((u32)rom - BUILD_ROM_START) / OPTION_ROM_ALIGN];
     if (!source)
         return -1;
+#if defined(UNUSED_ON_MISTER)
     if (source & RS_PCIROM)
         return bootprio_find_pci_rom((void*)(u32)source, instance);
+#endif // defined(UNUSED_ON_MISTER)
     struct romfile_s *file = (void*)(u32)source;
     return bootprio_find_named_rom(file->name, instance);
 }
@@ -169,7 +173,7 @@ getRomPriority(u64 *sources, struct rom_header *rom, int instance)
 /****************************************************************
  * Roms in CBFS
  ****************************************************************/
-
+#if defined(UNUSED_ON_MISTER)
 static struct rom_header *
 deploy_romfile(struct romfile_s *file)
 {
@@ -308,6 +312,7 @@ fail:
     pci_config_writel(bdf, PCI_ROM_ADDRESS, orig);
     return NULL;
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 static int boot_irq_captured(void)
 {
@@ -323,6 +328,7 @@ static void boot_irq_restore(void)
 }
 
 // Attempt to map and initialize the option rom on a given PCI device.
+#if defined(UNUSED_ON_MISTER)
 static void
 init_pcirom(struct pci_device *pci, int isvga, u64 *sources)
 {
@@ -354,6 +360,7 @@ init_pcirom(struct pci_device *pci, int isvga, u64 *sources)
         boot_irq_restore();
     }
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 
 /****************************************************************
@@ -371,6 +378,7 @@ optionrom_setup(void)
     memset(sources, 0, sizeof(sources));
     u32 post_vga = rom_get_last();
 
+#if defined(UNUSED_ON_MISTER)
     // Find and deploy PCI roms.
     struct pci_device *pci;
     foreachpci(pci) {
@@ -384,6 +392,7 @@ optionrom_setup(void)
     // Find and deploy CBFS roms not associated with a device.
     run_file_roms("genroms/", 0, sources);
     rom_reserve(0);
+#endif // defined(UNUSED_ON_MISTER)
 
     // All option roms found and deployed - now build BEV/BCV vectors.
 
@@ -431,7 +440,7 @@ static void try_setup_display_other(void)
     struct pci_device *pci;
 
     dprintf(1, "No VGA found, scan for other display\n");
-
+#if defined(UNUSED_ON_MISTER)
     foreachpci(pci) {
         if (pci->class != PCI_CLASS_DISPLAY_OTHER)
             continue;
@@ -444,6 +453,7 @@ static void try_setup_display_other(void)
         init_optionrom(rom, pci->bdf, 1);
         return;
     }
+#endif // defined(UNUSED_ON_MISTER)
 }
 
 // Call into vga code to turn on console.
@@ -462,10 +472,11 @@ vgarom_setup(void)
     S3ResumeVga = romfile_loadint("etc/s3-resume-vga-init", CONFIG_QEMU);
     RunPCIroms = romfile_loadint("etc/pci-optionrom-exec", 2);
     ScreenAndDebug = romfile_loadint("etc/screen-and-debug", 1);
-
     // Clear option rom memory
-    memset((void*)BUILD_ROM_START, 0, rom_get_max() - BUILD_ROM_START);
+    // MiSTer will copy the ROM to 0xC0000, it does not need to be loaded and should not be memset.
+	//   memset((void*)BUILD_ROM_START, 0, rom_get_max() - BUILD_ROM_START);
 
+#if defined(UNUSED_ON_MISTER)
     // Find and deploy PCI VGA rom.
     struct pci_device *pci;
     foreachpci(pci) {
@@ -481,6 +492,10 @@ vgarom_setup(void)
 
     // Find and deploy CBFS vga-style roms not associated with a device.
     run_file_roms("vgaroms/", 1, NULL);
+#endif // defined(UNUSED_ON_MISTER)
+    // MiSTer -- Reserve VGA ROM, it's already in place at 0xc0000
+    struct rom_header *rom = (struct rom_header *)0xc0000;
+    init_optionrom(rom, 0, 1);    
     rom_reserve(0);
 
     if (rom_get_last() != BUILD_ROM_START)
