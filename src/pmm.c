@@ -78,7 +78,7 @@ handle_pmm00(u16 *args)
         data = malloc_palloc(highzone, size, align);
         if (!data && (flags & 8)) {
             /*
-             * We are out of meory.  So go allocate from the (big)
+             * We are out of memory.  So go allocate from the (big)
              * ZoneTmpHigh instead and reserve the block in the e820
              * map so the OS will not override it.  That way we can
              * handle big permanent allocations without needing a big
