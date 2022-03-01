@@ -151,7 +151,7 @@ platform_hardware_setup(void)
     // Init base pc hardware.
     pic_setup();
     thread_setup();
-    mathcp_setup();
+    // MiSTer AO486 doesn't currently have a math coprocessor -- mathcp_setup();
 
     // Platform specific setup
     // Unused on MiSTer -- qemu_platform_setup();
