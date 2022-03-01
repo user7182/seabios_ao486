@@ -201,7 +201,7 @@ Since most memory accesses are to [common memory used at
 run-time](#Common_memory_used_at_run-time), several helper
 macros are also available.
 
-* GET_IDT / SET_IDT : Access the interrupt descriptor table (IDT).
+* GET_IVT / SET_IVT : Access the interrupt descriptor table (IDT).
 
 * GET_BDA / SET_BDA : Access the BIOS Data Area (BDA).
 
