@@ -147,13 +147,14 @@ init_optionrom(struct rom_header *rom, u16 bdf, int isvga)
 }
 
 #define RS_PCIROM (1LL<<33)
-
+#if defined(UNUSED_ON_MISTER)
 static void
 setRomSource(u64 *sources, struct rom_header *rom, u64 source)
 {
     if (sources)
         sources[((u32)rom - BUILD_ROM_START) / OPTION_ROM_ALIGN] = source;
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 static int
 getRomPriority(u64 *sources, struct rom_header *rom, int instance)
@@ -312,7 +313,6 @@ fail:
     pci_config_writel(bdf, PCI_ROM_ADDRESS, orig);
     return NULL;
 }
-#endif // defined(UNUSED_ON_MISTER)
 
 static int boot_irq_captured(void)
 {
@@ -328,7 +328,6 @@ static void boot_irq_restore(void)
 }
 
 // Attempt to map and initialize the option rom on a given PCI device.
-#if defined(UNUSED_ON_MISTER)
 static void
 init_pcirom(struct pci_device *pci, int isvga, u64 *sources)
 {
@@ -435,12 +434,12 @@ optionrom_setup(void)
 int ScreenAndDebug;
 struct rom_header *VgaROM;
 
+#if defined(UNUSED_ON_MISTER)
 static void try_setup_display_other(void)
 {
     struct pci_device *pci;
 
     dprintf(1, "No VGA found, scan for other display\n");
-#if defined(UNUSED_ON_MISTER)
     foreachpci(pci) {
         if (pci->class != PCI_CLASS_DISPLAY_OTHER)
             continue;
@@ -453,14 +452,14 @@ static void try_setup_display_other(void)
         init_optionrom(rom, pci->bdf, 1);
         return;
     }
-#endif // defined(UNUSED_ON_MISTER)
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 // Call into vga code to turn on console.
 void
 vgarom_setup(void)
 {
-    int have_vga = 0;
+    // Unused on MiSTer -- int have_vga = 0;
 
     if (! CONFIG_OPTIONROMS)
         return;
@@ -493,6 +492,7 @@ vgarom_setup(void)
     // Find and deploy CBFS vga-style roms not associated with a device.
     run_file_roms("vgaroms/", 1, NULL);
 #endif // defined(UNUSED_ON_MISTER)
+
     // MiSTer -- Reserve VGA ROM, it's already in place at 0xc0000
     struct rom_header *rom = (struct rom_header *)0xc0000;
     init_optionrom(rom, 0, 1);    

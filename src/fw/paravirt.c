@@ -76,6 +76,7 @@ static void kvm_detect(void)
     }
 }
 
+#if defined(UNUSED_ON_MISTER)
 #define KVM_FEATURE_CLOCKSOURCE           0
 #define KVM_FEATURE_CLOCKSOURCE2          3
 
@@ -117,16 +118,17 @@ static void kvmclock_init(void)
     dprintf(1, "kvmclock: stable tsc, %d MHz\n", MHz);
     tsctimer_setfreq(MHz * 1000, "kvmclock");
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 static void qemu_detect(void)
 {
     if (!CONFIG_QEMU_HARDWARE)
         return;
 
+#if defined(UNUSED_ON_MISTER)
     // Setup QEMU debug output port
     qemu_debug_preinit();
 
-#if defined(UNUSED_ON_MISTER)
     // check northbridge @ 00:00.0
     u16 v = pci_config_readw(0, PCI_VENDOR_ID);
     if (v == 0x0000 || v == 0xffff)
@@ -154,7 +156,7 @@ static void qemu_detect(void)
 #endif // defined(UNUSED_ON_MISTER)
 }
 
-static int qemu_early_e820(void);
+// Unused on MiSTer -- static int qemu_early_e820(void);
 
 void
 qemu_preinit(void)
@@ -193,6 +195,8 @@ qemu_preinit(void)
     e820_add(0xfffc0000, 256*1024, E820_RESERVED);
 }
 
+#if defined(UNUSED_ON_MISTER)
+
 #define MSR_IA32_FEATURE_CONTROL 0x0000003a
 
 static void msr_feature_control_setup(void)
@@ -208,14 +212,12 @@ qemu_platform_setup(void)
     if (!CONFIG_QEMU)
         return;
 
-#if defined(UNUSED_ON_MISTER)
     if (runningOnXen()) {
         pci_probe_devices();
         xen_hypercall_setup();
         xen_biostable_setup();
         return;
     }
-#endif // defined(UNUSED_ON_MISTER)
 
     kvmclock_init();
 
@@ -670,7 +672,6 @@ void qemu_cfg_init(void)
  * This runs before malloc and romfile are ready, so we have to work
  * with stack allocations and read from fw_cfg in chunks.
  */
-#if defined(UNUSED_ON_MISTER)
 static int qemu_early_e820(void)
 {
     struct e820_reservation table;

@@ -18,7 +18,7 @@
 #include "hw/serialio.h" // serial_debug_preinit
 // Unused on MiSTer -- #include "hw/usb.h" // usb_setup
 #include "stacks.h" // MiSTer, added header because its needed but no longer 
-                 // pulled in from a sub-include.
+                    //   pulled in from a sub-include.
 #include "malloc.h" // malloc_init
 #include "memmap.h" // SYMBOL
 #include "output.h" // dprintf
@@ -107,9 +107,9 @@ interface_init(void)
     malloc_init();
 
     // Setup romfile items.
-    qemu_cfg_init();
-    coreboot_cbfs_init();
-    multiboot_init();
+    // Unused on MiSTer -- qemu_cfg_init();
+    // Unused on MiSTer -- coreboot_cbfs_init();
+    // Unused on MiSTer -- multiboot_init();
 
     // Setup ivt/bda/ebda
     ivt_init();
@@ -133,7 +133,7 @@ device_hardware_setup(void)
     block_setup();
     lpt_setup();
     serial_setup();
-    cbfs_payload_setup();
+    // Unused on MiSTer -- cbfs_payload_setup();
 }
 
 static void
@@ -148,8 +148,8 @@ platform_hardware_setup(void)
     mathcp_setup();
 
     // Platform specific setup
-    qemu_platform_setup();
-    coreboot_platform_setup();
+    // Unused on MiSTer -- qemu_platform_setup();
+    // Unused on MiSTer -- coreboot_platform_setup();
 
     // Setup timers and periodic clock interrupt
     timer_setup();
@@ -308,8 +308,8 @@ dopost(void)
     code_mutable_preinit();
 
     // Detect ram and setup internal malloc.
-    qemu_preinit();
-    coreboot_preinit();
+    qemu_preinit(); // MiSTer -- Used to read the RAM size from NVRAM.
+    // Unused on MiSTer -- coreboot_preinit();
     malloc_preinit();
 
     // Relocate initialization code and call maininit().

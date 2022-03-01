@@ -8,7 +8,7 @@
 #include "ata.h" // ATA_CB_STAT
 #include "biosvar.h" // GET_GLOBALFLAT
 #include "block.h" // struct drive_s
-#include "blockcmd.h" // CDB_CMD_READ_10
+#include "blockcmd.h" // CDB_CMD_READ_10 and struct cdb_rwdata_10
 #include "byteorder.h" // be16_to_cpu
 #include "malloc.h" // malloc_fseg
 #include "output.h" // dprintf
@@ -591,8 +591,12 @@ ata_atapi_process_op(struct disk_op_s *op)
 
     if (op->command == CMD_WRITE || op->command == CMD_FORMAT)
         return DISK_RET_EWRITEPROTECT;
-    u8 cdbcmd[CDROM_CDB_SIZE];
-    int blocksize = scsi_fill_cmd(op, cdbcmd, sizeof(cdbcmd));
+    // MiSTer -- Changed the cdbcmd buffer to be large enough to hold a
+    //  cdb_rwdata_10 struct which is 16 bytes to remove compiler
+    //  warnings. Left the max CDB size of 12 bytes because I assume that
+    //  is correct.
+    u8 cdbcmd[sizeof(struct cdb_rwdata_10)];
+    int blocksize = scsi_fill_cmd(op, cdbcmd, CDROM_CDB_SIZE);
     if (blocksize < 0)
         return default_process_op(op);
 

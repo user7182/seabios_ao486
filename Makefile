@@ -38,8 +38,7 @@ SRC16=$(SRCBOTH)
 SRC32FLAT=$(SRCBOTH) post.c e820map.c malloc.c romfile.c x86.c		\
     optionroms.c pmm.c font.c boot.c bootsplash.c jpeg.c bmp.c		\
     tcgbios.c sha1.c 	\
-    fw/coreboot.c		\
-    fw/lzmadecode.c fw/multiboot.c fw/csm.c fw/biostables.c		\
+    fw/lzmadecode.c fw/csm.c fw/biostables.c		\
     fw/paravirt.c fw/smp.c		\
     fw/mtrr.c fw/acpi.c fw/mptable.c fw/pirtable.c		\
     fw/smbios.c fw/romfile_loader.c fw/dsdt_parser.c 	\
@@ -61,7 +60,8 @@ COMMONCFLAGS := -I$(OUT) -Isrc -Os -MD -g \
     -m32 -march=i386 -mregparm=3 -mpreferred-stack-boundary=2 \
     -minline-all-stringops -fomit-frame-pointer \
     -freg-struct-return -ffreestanding -fno-delete-null-pointer-checks \
-    -ffunction-sections -fdata-sections -fno-common -fno-merge-constants
+    -ffunction-sections -fdata-sections -fno-common -fno-merge-constants \
+	-Werror
 COMMONCFLAGS += $(call cc-option,$(CC),-nopie,)
 COMMONCFLAGS += $(call cc-option,$(CC),-fno-pie,)
 COMMONCFLAGS += $(call cc-option,$(CC),-fno-stack-protector,)

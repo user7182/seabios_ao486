@@ -105,6 +105,7 @@ serial_debug_flush(void)
 }
 
 
+#if defined(UNUSED_ON_MISTER)
 /****************************************************************
  * QEMU debug port
  ****************************************************************/
@@ -135,3 +136,4 @@ qemu_debug_putc(char c)
         // Send character to debug port.
         outb(c, port);
 }
+#endif // defined(UNUSED_ON_MISTER)

@@ -17,6 +17,8 @@
 #include "malloc.h" // free
 #include "output.h" // dprintf
 #include "romfile.h" // romfile_loadint
+#include "stacks.h" // MiSTer, added header because its needed but no longer
+                    //   pulled in from a sub-include.
 #include "std/disk.h" // struct mbr_s
 #include "string.h" // memset
 #include "util.h" // irqtimer_calc

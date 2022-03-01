@@ -41,9 +41,11 @@ debug_putc(struct putcinfo *action, char c)
 {
     if (! CONFIG_DEBUG_LEVEL)
         return;
+#if defined(UNUSED_ON_MISTER)
     qemu_debug_putc(c);
     if (!MODESEGMENT)
         coreboot_debug_putc(c);
+#endif // defined(UNUSED_ON_MISTER)
     serial_debug_putc(c);
 }
 
