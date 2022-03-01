@@ -56,7 +56,7 @@ endchoice
     config BOOTMENU
         depends on BOOT
         bool "Bootmenu"
-        default y
+        default n 
         help
             Support an interactive boot menu at end of post.
     config BOOTSPLASH
