@@ -11,19 +11,19 @@
 #include "byteorder.h" // be32_to_cpu
 #include "config.h" // CONFIG_QEMU
 #include "e820map.h" // e820_add
-#include "hw/pci.h" // pci_config_readw
-#include "hw/pcidevice.h" // pci_probe_devices
-#include "hw/pci_regs.h" // PCI_DEVICE_ID
+// Unused on MiSTer -- #include "hw/pci.h" // pci_config_readw
+// Unused on MiSTer -- #include "hw/pcidevice.h" // pci_probe_devices
+// Unused on MiSTer -- #include "hw/pci_regs.h" // PCI_DEVICE_ID
 #include "hw/serialio.h" // PORT_SERIAL1
 #include "hw/rtc.h" // CMOS_*
-#include "hw/virtio-mmio.h" // virtio_mmio_acpi
+// Unused on MiSTer -- #include "hw/virtio-mmio.h" // virtio_mmio_acpi
 #include "malloc.h" // malloc_tmp
 #include "output.h" // dprintf
 #include "paravirt.h" // qemu_cfg_preinit
 #include "romfile.h" // romfile_loadint
 #include "romfile_loader.h" // romfile_loader_execute
 #include "string.h" // memset
-#include "util.h" // pci_setup
+// Unused on MiSTer -- #include "util.h" // pci_setup
 #include "x86.h" // cpuid
 #include "xen.h" // xen_biostable_setup
 #include "stacks.h" // yield
@@ -126,6 +126,7 @@ static void qemu_detect(void)
     // Setup QEMU debug output port
     qemu_debug_preinit();
 
+#if defined(UNUSED_ON_MISTER)
     // check northbridge @ 00:00.0
     u16 v = pci_config_readw(0, PCI_VENDOR_ID);
     if (v == 0x0000 || v == 0xffff)
@@ -150,6 +151,7 @@ static void qemu_detect(void)
         dprintf(1, "Running on QEMU (unknown nb: %04x:%04x)\n", v, d);
         break;
     }
+#endif // defined(UNUSED_ON_MISTER)
 }
 
 static int qemu_early_e820(void);
@@ -163,13 +165,16 @@ qemu_preinit(void)
     if (!CONFIG_QEMU)
         return;
 
+#if defined(UNUSED_ON_MISTER)
     if (runningOnXen()) {
         xen_ramsize_preinit();
         return;
     }
+#endif // defined(UNUSED_ON_MISTER)
 
     // try read e820 table first
-    if (!qemu_early_e820()) {
+    // Unused on MiSTer -- if (!qemu_early_e820()) 
+	{	// MiSTer -- Instead always get memory size from nvram
         // when it fails get memory size from nvram.
         u32 rs = ((rtc_read(CMOS_MEM_EXTMEM2_LOW) << 16)
                   | (rtc_read(CMOS_MEM_EXTMEM2_HIGH) << 24));
@@ -203,19 +208,23 @@ qemu_platform_setup(void)
     if (!CONFIG_QEMU)
         return;
 
+#if defined(UNUSED_ON_MISTER)
     if (runningOnXen()) {
         pci_probe_devices();
         xen_hypercall_setup();
         xen_biostable_setup();
         return;
     }
+#endif // defined(UNUSED_ON_MISTER)
 
     kvmclock_init();
 
     // Initialize pci
+#if defined(UNUSED_ON_MISTER)
     pci_setup();
     smm_device_setup();
     smm_setup();
+#endif // defined(UNUSED_ON_MISTER)
 
     // Initialize mtrr, msr_feature_control and smp
     mtrr_setup();
@@ -661,6 +670,7 @@ void qemu_cfg_init(void)
  * This runs before malloc and romfile are ready, so we have to work
  * with stack allocations and read from fw_cfg in chunks.
  */
+#if defined(UNUSED_ON_MISTER)
 static int qemu_early_e820(void)
 {
     struct e820_reservation table;
@@ -719,3 +729,4 @@ static int qemu_early_e820(void)
     dprintf(3, "qemu/e820: RamSizeOver4G: 0x%016llx\n", RamSizeOver4G);
     return 1;
 }
+#endif // defined(UNUSED_ON_MISTER)
