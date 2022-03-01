@@ -42,12 +42,12 @@ void hexdump(const void *d, int len);
             __debug_enter((regs), __func__);            \
     } while (0)
 // MiSTer
-//     \/
+//    :
 #define debug_exit(regs, lvl) do {                      \
         if ((lvl) && (lvl) <= CONFIG_DEBUG_LEVEL)       \
             __debug_exit((regs), __func__);             \
     } while (0)
-//     /\
+//    :
 // MiSTer
 #define debug_isr(lvl) do {                             \
         if ((lvl) && (lvl) <= CONFIG_DEBUG_LEVEL)       \
