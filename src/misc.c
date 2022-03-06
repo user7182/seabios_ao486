@@ -34,6 +34,7 @@ handle_12(struct bregs *regs)
 {
     debug_enter(regs, DEBUG_HDL_12);
     regs->ax = GET_BDA(mem_size_kb);
+    dprintf(3, "mem size kb = %u\n", regs->ax); // MiSTer: TODO -- Investigate why this changes over multiple calls.
 }
 
 // INT 11h Equipment List Service Entry Point

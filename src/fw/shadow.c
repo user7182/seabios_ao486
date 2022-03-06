@@ -18,6 +18,8 @@
 #include "util.h" // make_bios_writable
 #include "x86.h" // wbinvd
 
+#if defined(UNUSED_ON_MISTER)
+
 // On the emulators, the bios at 0xf0000 is also at 0xffff0000
 #define BIOS_SRC_OFFSET 0xfff00000
 
@@ -117,7 +119,7 @@ static int ShadowBDF = -1;
 void
 make_bios_writable(void)
 {
-    if (!CONFIG_QEMU || runningOnXen())
+    if (!CONFIG_QEMU /* Unused on MiSTer -- || runningOnXen()*/)
         return;
 
     dprintf(3, "enabling shadow ram\n");
@@ -145,15 +147,21 @@ make_bios_writable(void)
     }
     dprintf(1, "Unable to unlock ram - bridge not found\n");
 }
+#endif // defined(UNUSED_ON_MISTER)
 
 // Make the BIOS code segment area (0xf0000) read-only.
 void
 make_bios_readonly(void)
 {
-    if (!CONFIG_QEMU || runningOnXen())
+    if (!CONFIG_QEMU /* Unused on MiSTer -- || runningOnXen()*/)
         return;
     dprintf(3, "locking shadow ram\n");
 
+    // On MiSTer the BIOS region 0xF0000 - 0xFFFFF can be locked
+    // by writing a special word to the MiSTer FS address.
+    *(u32*)0xCE000 = 0x2346;
+
+#if defined(UNUSED_ON_MISTER)
     if (ShadowBDF < 0) {
         dprintf(1, "Unable to lock ram - bridge not found\n");
         return;
@@ -164,8 +172,10 @@ make_bios_readonly(void)
         make_bios_readonly_intel(ShadowBDF, I440FX_PAM0);
     else
         make_bios_readonly_intel(ShadowBDF, Q35_HOST_BRIDGE_PAM0);
+#endif // defined(UNUSED_ON_MISTER)
 }
 
+#if defined(UNUSED_ON_MISTER)
 void
 qemu_reboot(void)
 {
@@ -206,3 +216,4 @@ qemu_reboot(void)
     // Next try triple faulting the CPU to force a reset
     asm volatile("int3");
 }
+#endif // defined(UNUSED_ON_MISTER)

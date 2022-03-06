@@ -119,6 +119,9 @@ interface_init(void)
     //  values based on x86_share.cpp in the Main_MiSTer repository.
     //      SHMEM_ADDR      0xCE000
     //      SHMEM_SIZE      0x2000
+    //
+    // Marking this range as reserved will be caught by some OSes 
+    // (Win98) when misterfs.exe attempts to use this range.
     e820_add(0xCE000, 0x2000, E820_RESERVED);
 
     // Other interfaces
@@ -236,7 +239,7 @@ maininit(void)
     prepareboot();
 
     // Write protect bios memory.
-    // Unused on MiSTer -- make_bios_readonly();
+    make_bios_readonly();
 
     // Invoke int 19 to start boot process.
     startBoot();
@@ -322,6 +325,8 @@ dopost(void)
     reloc_preinit(maininit, NULL);
 }
 
+void mister_post(void);		// MiSTer
+
 // Entry point for Power On Self Test (POST) - the BIOS initialization
 // phase.  This function makes the memory at 0xc0000-0xfffff
 // read/writable and then calls dopost().
@@ -343,6 +348,73 @@ handle_post(void)
 	//    to be updated to allow writes to the BIOS and ROM regions.	
     // Unused on MiSTer -- make_bios_writable();
 
+    mister_post();	// MiSTer
+
     // Now that memory is read/writable - start post process.
     dopost();
 }
+
+// MiSTer -- TODO
+//  |
+void VISIBLE32FLAT
+mister_real_mode_ram_test(void)
+{
+    u32 const start = 0x00006000;
+    u32 const end   = 0x00006F00;
+    for (volatile int i = start; i < end; ++i) {
+        *(u32*)i = i;
+        if ((i % 0x100) == 0) {
+            dprintf(3, "Check real mode RAM from address 0x%08X to 0x%08X\r", i, i + 0x1000);
+        }
+        if (i != *(u32*)i) {
+            dprintf(3, "\nRAM error at address %08X = %08X\n", i, *(u32*)i);
+            //break;
+        }
+    }
+    dprintf(3, "\nDone\n");
+}
+
+void VISIBLE32FLAT
+mister_extended_ram_test(void)
+{
+    //u32 const start = 0x00100000;
+    u32 const start = 0x07000000;
+    u32 const end   = 0x10000000;
+    for (volatile int i = start; i < end; i += 16) {
+        *(u32*)i = 0x0Ffffff0;
+        if ((i % 0x10000) == 0) {
+            dprintf(3, "Check extended RAM from address 0x%08X to 0x%08X\r", i, i + 0x1000);
+        }
+        if (0x0Ffffff0 != *(u32*)i) {
+            dprintf(3, "\nRAM error at address %08X = %08X\n", i, *(u32*)i);
+        }
+    }
+    dprintf(3, "\nDone\n");
+}
+
+void VISIBLE32FLAT
+mister_extended_ram_test_2(void)
+{
+    //u32 const start = 0x00100000;
+    for( u32 i = 0; i < 0xfFFFFFFF; ++i) {
+        *(u32*)0x0FFFFFFF = i;
+        if ((i % 0x10000) == 0) {
+            dprintf(3, "Check extended RAM from address 0x%08X to 0x%08X\r", i, i + 0x1000);
+        }
+        if (i != *(u32*)0x0FFFFFFF) {
+            dprintf(3, "\nRAM error at address %08X = %08X\n", i, *(u32*)0x0FFFFFFF);
+        }        
+    }
+    dprintf(3, "\nDone\n");
+}
+
+void VISIBLE32FLAT
+mister_post(void)
+{
+    //memset((u32*)0x0Ffffff0, 0xCB, 0x10000000-0x0Ffffff0);
+    //mister_real_mode_ram_test();
+    mister_extended_ram_test();
+    //mister_extended_ram_test_2();
+}
+//  |
+// MiSTer -- TODO

@@ -109,7 +109,7 @@ s3_resume(void)
     /* Replay any fw_cfg entries that go back to the host */
     romfile_fw_cfg_resume();
 
-    // Unused on MiSTer -- make_bios_readonly();
+    make_bios_readonly();
 
     // Invoke the resume vector.
     struct bregs br;

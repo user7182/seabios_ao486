@@ -9,6 +9,7 @@
 #include "config.h" // CONFIG_*
 #include "farptr.h" // FLATPTR_TO_SEG
 #include "biosvar.h" // GET_IVT
+#include "e820map.h"    // MiSTer
 // Unused on MiSTer -- #include "hw/pci.h" // pci_config_readl
 // Unused on MiSTer -- #include "hw/pcidevice.h" // foreachpci
 // Unused on MiSTer -- #include "hw/pci_ids.h" // PCI_CLASS_DISPLAY_VGA
