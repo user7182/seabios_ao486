@@ -389,7 +389,7 @@ menu "BIOS interfaces"
     config CDROM_EMU
         depends on CDROM_BOOT
         bool "DVD/CDROM boot drive emulation"
-        default n
+        default y
         help
             Support bootable CDROMs that emulate a floppy/harddrive.
 
